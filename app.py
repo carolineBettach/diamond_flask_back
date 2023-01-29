@@ -42,13 +42,18 @@ def get_diamond(diamond_id = -1):
 def add_diamond():
     data = request.get_json()   # request data as dict
     file_data = load_data()
+    if(len(file_data)>0):
+        Newid=int(file_data[len(file_data)-1]["ID"])+1
+    else:
+        Newid=1
     if type(data)==list:# the json get is in format: array of json [{},{}]
-        for el in data:
-            file_data.append(el)
+        for el in data:     
+            file_data.append({**{'ID':Newid}, **el})
     else:# the json get is in format: a single object json {}
-        file_data.append(data)
+       
+        file_data.append({**{'ID':Newid}, **data})
     write_data(file_data)
-    return data
+    return {**{'ID':Newid}, **data}
 
 @app.route('/diamond/<int:diamond_id>', methods=['PUT'])
 def update_diamond(diamond_id):    
